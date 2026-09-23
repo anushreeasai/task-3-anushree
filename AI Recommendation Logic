@@ -1,0 +1,117 @@
+# AI Recommendation Logic
+# DecodeLabs - Artificial Intelligence Internship
+# Project 3
+
+# Movie dataset
+movies = [
+    {
+        "name": "Avengers: Endgame",
+        "genres": ["Action", "Adventure", "Sci-Fi"]
+    },
+    {
+        "name": "Interstellar",
+        "genres": ["Sci-Fi", "Drama", "Adventure"]
+    },
+    {
+        "name": "The Dark Knight",
+        "genres": ["Action", "Crime", "Drama"]
+    },
+    {
+        "name": "Inception",
+        "genres": ["Sci-Fi", "Action", "Thriller"]
+    },
+    {
+        "name": "Titanic",
+        "genres": ["Romance", "Drama"]
+    },
+    {
+        "name": "The Conjuring",
+        "genres": ["Horror", "Thriller"]
+    },
+    {
+        "name": "Jurassic Park",
+        "genres": ["Adventure", "Sci-Fi", "Thriller"]
+    },
+    {
+        "name": "La La Land",
+        "genres": ["Romance", "Drama", "Musical"]
+    }
+]
+
+
+def calculate_similarity(user_preferences, movie_genres):
+    """
+    Calculate similarity between user's preferences
+    and a movie's genres.
+    """
+
+    matching_preferences = set(user_preferences) & set(movie_genres)
+
+    if len(user_preferences) == 0:
+        return 0
+
+    score = (len(matching_preferences) / len(user_preferences)) * 100
+
+    return score
+
+
+def get_recommendations(user_preferences):
+    recommendations = []
+
+    for movie in movies:
+        score = calculate_similarity(user_preferences, movie["genres"])
+
+        if score > 0:
+            recommendations.append({
+                "name": movie["name"],
+                "genres": movie["genres"],
+                "score": score
+            })
+
+    # Highest similarity first
+    recommendations.sort(key=lambda movie: movie["score"], reverse=True)
+
+    return recommendations
+
+
+print("=" * 55)
+print("       AI MOVIE RECOMMENDATION SYSTEM")
+print("=" * 55)
+
+print("\nAvailable genres:")
+print("Action, Adventure, Sci-Fi, Drama, Crime, Thriller,")
+print("Romance, Horror, Musical")
+
+print("\nEnter your movie preferences.")
+print("You can enter multiple genres separated by commas.")
+
+user_input = input("\nYour preferences: ")
+
+# Convert input into a clean list
+user_preferences = [
+    preference.strip().title()
+    for preference in user_input.split(",")
+    if preference.strip()
+]
+
+if not user_preferences:
+    print("\nPlease enter at least one preference.")
+else:
+    recommendations = get_recommendations(user_preferences)
+
+    print("\n" + "=" * 55)
+    print("              RECOMMENDATIONS")
+    print("=" * 55)
+
+    if recommendations:
+        for index, movie in enumerate(recommendations, start=1):
+            print(f"\n{index}. {movie['name']}")
+            print(f"   Genres: {', '.join(movie['genres'])}")
+            print(f"   Similarity Score: {movie['score']:.2f}%")
+    else:
+        print("\nNo matching movies found.")
+        print("Try another genre from the available list.")
+
+print("\n" + "=" * 55)
+print("Thank you for using the recommendation system!")
+print("=" * 55)
